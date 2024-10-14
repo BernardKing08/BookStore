@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <title>Bookstore - Cart</title>
+    <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body>
+    <!--Header replace-->
+    <div th:replace="~{header :: header}"></div>
+    <!--Header replace--> 
+    <main>
+        <div class="container mt-4">
+            <h2>Shopping Cart</h2>
+            <!-- Cart items dynamically added here -->
+            <div id="book-list">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Author</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="cartItem, iterStat : ${cartItems}">
+                            <td th:text="${iterStat.count}"></td> <!-- Display row number -->
+                            <td th:text="${cartItem.name}"></td>
+                            <td th:text="${cartItem.author}"></td>
+                            <td th:text="${cartItem.qty}"></td>
+                            <td>
+                                <form th:action="@{/removeItem}" method="post">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                                    <input type="hidden" name="id" th:value="${cartItem.uuid}"/>
+                                    <button type="submit" class="btn btn-secondary m-1">Remove Item</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>  
+			<div class="d-flex justify-content-between align-items-center mt-4">
+				<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+					ChecK Out
+				</button>
+			    <span class="ms-auto"><strong>Total Price: </strong> $<span th:text="${totalPrice}">0.00</span></span>
+			</div>
+			
+			<!-- Modal -->
+			<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+			    <div class="modal-dialog modal-dialog-centered">
+			        <div class="modal-content">
+			            <div class="modal-header">
+			                <h1 class="modal-title fs-5" id="staticBackdropLabel">Check Out Confirmation</h1>
+			                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			            </div>
+			            <div class="modal-body">
+			                Do you want to buy the following books for <span th:text="${totalPrice}">0.00</span>?
+			            </div>
+			            <div class="modal-footer">
+			                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+			                <!-- Form to handle checkout -->
+			                <form th:action="@{/checkout}" method="post">
+			                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+			                    <button type="submit" class="btn btn-primary">Yes</button>
+			                </form>
+			            </div>
+			        </div>
+			    </div>
+			</div>
+
+
+        </div>
+    </main>
+    
+    <script src="/assets/js/scripts.js"></script>
+</body>
+</html>
