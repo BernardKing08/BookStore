@@ -14,6 +14,7 @@ public class ProjectSecurityConfig {
     @Bean
     SecurityFilterChain sfc(HttpSecurity http) throws Exception {
         http
+        //yet to add csrf protection in the following controllers 
             .csrf(csrf -> csrf
             		.ignoringRequestMatchers("/addToCart")
             		.ignoringRequestMatchers("/removeItem")
@@ -62,7 +63,7 @@ public class ProjectSecurityConfig {
 
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }
