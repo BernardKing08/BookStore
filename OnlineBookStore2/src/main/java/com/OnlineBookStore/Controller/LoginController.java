@@ -71,6 +71,7 @@ public class LoginController {
         if(errors.hasErrors()){
             return "signIn";
         }
+        //add condition to check if email already exists before saving it
         boolean isSaved = personService.createNewPerson(person);
         if(isSaved){
             return "redirect:/login?register=true";
