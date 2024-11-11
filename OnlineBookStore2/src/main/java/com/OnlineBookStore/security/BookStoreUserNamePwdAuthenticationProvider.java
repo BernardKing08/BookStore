@@ -33,13 +33,18 @@ public class BookStoreUserNamePwdAuthenticationProvider implements Authenticatio
 		String pwd = authentication.getCredentials().toString();
 		
 		Person person = personRepository.readByEmail(email);
-		
-		if(person != null && person.getPersonId() > 0 && passwordEncoder.matches(pwd,person.getPwd())) {
-			return new UsernamePasswordAuthenticationToken(person.getName(), null, getGrantedAuthorities(person.getRoles()));
+		if (person != null && person.getPersonId() > 0) {
+		    if (passwordEncoder.matches(pwd, person.getPwd())) {
+		        return new UsernamePasswordAuthenticationToken(person.getName(), null, getGrantedAuthorities(person.getRoles()));
+		    } else {
+		        System.out.println("Password mismatch");
+		        throw new BadCredentialsException("Invalid credentials");
+		    }
+		} else {
+		    System.out.println("User not found or invalid ID");
+		    throw new BadCredentialsException("Invalid credentials");
 		}
-		else {
-			throw new BadCredentialsException("Invalid credentials");
-		}
+
 		
 	}
 	
