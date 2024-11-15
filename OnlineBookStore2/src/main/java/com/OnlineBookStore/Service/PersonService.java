@@ -25,9 +25,16 @@ public class PersonService {
 	
 	
 	
-	public boolean createNewPerson(Person person) {
-		boolean isSaved = false;
+	public String createNewPerson(Person person) {
+		String isSaved = checkEmailAndName(person);
 		
+		//implementing email and name check
+		if(isSaved != null) {
+			return isSaved;
+		}
+		
+		
+		//assigns roles and and encodes the password
 		Roles role = rolesRepository.getByRoleName(OnlineBookStoreConstants.STUDENT_ROLE);
 		person.setRoles(role);
 		
@@ -37,11 +44,22 @@ public class PersonService {
 		
         if (null != person && person.getPersonId() > 0)
         {
-            isSaved = true;
+            return isSaved;
         }
         return isSaved;
 		
-		
 	}
-	 
+	
+	public String checkEmailAndName(Person person) {
+		
+		if(personRepository.findByEmail(person.getEmail()).isPresent()) {
+			return "Email";
+		}
+		if(personRepository.findByName(person.getName()).isPresent()) {
+			return "Name";
+		}
+		
+		return null;
+	}
+	
 }

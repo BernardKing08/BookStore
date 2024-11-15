@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.OnlineBookStore.Model.Person;
+import com.OnlineBookStore.Repository.PersonRepository;
 import com.OnlineBookStore.Service.PersonService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,6 +25,9 @@ public class LoginController {
 	
 	@Autowired
 	private PersonService personService;
+	
+	@Autowired
+	private PersonRepository personRepository;
 	
 	@RequestMapping(value = "/login", method = {RequestMethod.GET, RequestMethod.POST})
     public String login(@RequestParam(value = "logout", required = false) String logout,
@@ -66,19 +70,19 @@ public class LoginController {
 	}
 	
 	///register?
-	@RequestMapping(value = "/register", method = { RequestMethod.POST})
-    public String createUser(@Valid @ModelAttribute("person") Person person, Errors errors) {
-        if(errors.hasErrors()){
-            return "signIn";
-        }
-        //add condition to check if email already exists before saving it
-        boolean isSaved = personService.createNewPerson(person);
-        if(isSaved){
-            return "redirect:/login?register=true";
-        }else {
-            return "signIn";
-        }
-    }
+	@RequestMapping(value = "/register", method = { RequestMethod.POST })
+	public String createUser (@Valid @ModelAttribute("person") Person person, Errors errors, Model model) {
+		String isSaved = personService.createNewPerson(person);
+		
+		if (errors.hasErrors() || isSaved != null) {
+	    	String errorMessage =  isSaved + " is already registered. Please use a different " + isSaved;
+	        model.addAttribute("errorMessage", errorMessage);
+	        return "signIn"; // Return to the sign-in page with the error message
+	    }
+	    
+	    return "redirect:/login?register=true";
+	    
+	}
 
 	
 	

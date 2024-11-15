@@ -24,6 +24,7 @@
 	            <div class="col-md-6" style="margin-top: 12%;">
 	                <!-- Create Account Form -->
 					<div class="alert alert-danger" role="alert" th:each="error : ${#fields.errors('person.*')}" th:text="${error}"></div>
+					<div th:if="${errorMessage}" class="alert alert-danger" role="alert" th:text="${errorMessage}"></div>
 	                <form th:action="@{/register}" method="post" class="" th:object="${person}">
 						
 						<h3 class="text-center mb-4">Create Account</h3>
@@ -63,7 +64,7 @@
 	                            </label>
 	                        </div>
 	                        </label>
-	                            <span class="ms-auto "><a href="#" class="">Login</a></span> 
+	                            <span class="ms-auto "><a th:href="@{/login}" class="">Login</a></span> 
 	                        </label>
 	                    </div>
 	
